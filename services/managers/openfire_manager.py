@@ -15,8 +15,6 @@ import threading
 import requests
 import json
 
-
-
 class OpenfireManager:
     def __init__(self):
         pass
@@ -48,45 +46,43 @@ class OpenfireManager:
         try:
             sanatized_username = OpenfireManager.__santatize_username(username)
             random_password = OpenfireManager.__generate_random_pass()
-            
+          
             openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/users"
-            
+          
             user_details = {"username":sanatized_username, "password":random_password}                        
-            custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY, 'content-type':'application/json'}           
+            custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY, 'content-type':'application/json'}          
             r = requests.post(openfire_path, headers=custom_headers, data=json.dumps(user_details))
-            
+          
             r.raise_for_status()
-            
-
+          
         except:
             # failed for some reason
             return "", ""
 
-        return sanatized_username, password
+        return sanatized_username, random_password
 
     @staticmethod
     def delete_user(username):
         try:
             openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/users/" + username
-            custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY}
+            custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY}
             r = requests.delete(openfire_path, headers=custom_headers)
-            
+
             r.raise_for_status()
-            
+
             return True
         except:
             return False
 
     @staticmethod
     def lock_user(username):
-        custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY}
+        custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY}
         openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/lockouts/" + username
         r = requests.post(openfire_path, headers=custom_headers)
 
-
     @staticmethod
     def unlock_user(username):
-        custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY}
+        custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY}
         openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/lockouts/" + username
         r = requests.delete(openfire_path, headers=custom_headers)
 
@@ -94,15 +90,15 @@ class OpenfireManager:
     def update_user_pass(username):
         try:
             random_password = OpenfireManager.__generate_random_pass()
-           
-            custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY, 'content-type':'application/json'}
+
+            custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY, 'content-type':'application/json'}
             openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/users/" + username
-            user_details = {"username":sanatized_username, "password":random_password}
-            
+            user_details = {"username": sanatized_username, "password": random_password}
+
             r = requests.put(openfire_path, headers=custom_headers, data=json.dumps(user_details))
-            
+
             r.raise_for_status()
-            
+
             return random_password
         except:
             return ""
@@ -110,33 +106,31 @@ class OpenfireManager:
     @staticmethod
     def update_user_groups(username, password, groups):
         openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/users/" + username + "/groups"
-        custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY, 'content-type':'application/json'}         
- 
+        custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY, 'content-type': 'application/json'}        
+
         group_list = []
-    
+
         for g in groups:
             group_list.append(g)
-            
-        group_dict = {'groupname':group_list}
-            
-        r = requests.post(openfire_path, headers=custom_headers, data=json.dumps(group_dict))
 
+        group_dict = {'groupname': group_list}
+
+        r = requests.post(openfire_path, headers=custom_headers, data=json.dumps(group_dict))
 
     @staticmethod
     def delete_user_groups(username, groups):
-       
+
         openfire_path = settings.OPENFIRE_ADDRESS + "plugins/restapi/v1/users/" + username + "/groups"
-        custom_headers = {'authorization':settings.OPENFIRE_SECRET_KEY, 'content-type':'application/json'}         
-        
+        custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY, 'content-type': 'application/json'}        
+
         group_list = []
-        
+
         for g in groups:
             group_list.append(g)
-           
-        group_dict = {'groupname':group_list}
-            
-        r = requests.delete(openfire_path, headers=custom_headers, data=json.dumps(group_dict)) 
-        
+
+        group_dict = {'groupname': group_list}
+
+        r = requests.delete(openfire_path, headers=custom_headers, data=json.dumps(group_dict))
 
     @staticmethod
     def send_broadcast_message(group_name, broadcast_message):
@@ -169,6 +163,7 @@ class OpenfireManager:
 
         client.disconnect()
 
+
 class XmppThread (threading.Thread):
     def __init__(self, threadID, name, counter, group, message,):
         threading.Thread.__init__(self)
@@ -177,6 +172,7 @@ class XmppThread (threading.Thread):
         self.counter = counter
         self.group = group
         self.message = message
+
     def run(self):
         print "Starting " + self.name
         OpenfireManager.send_broadcast_message(self.group, self.message)
