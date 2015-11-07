@@ -109,7 +109,8 @@ class OpenfireManager:
         #this endpoint doesn't allow put (boohoo) so we have to run a comparison on local vs remote groups
         custom_headers = {'authorization': settings.OPENFIRE_SECRET_KEY, 'accept': 'application/json'}
         r = requests.get(openfire_path, headers=custom_headers)
-        remote_groups = r.json()['groupname']
+        remote_groups = []
+        remote_groups.append(r.json()['groupname'])
         delete_groups = []
         add_groups = []
         for g in remote_groups:
