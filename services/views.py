@@ -140,7 +140,7 @@ def activate_ipboard_forum(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
-    result = IPBoardManager.add_user(character.character_name, request.user.email)
+    result = IPBoardManager.add_user(character.character_name, request.user.email, authinfo.main_char_id)
     if result[0] != "":
         AuthServicesInfoManager.update_user_ipboard_info(result[0], result[1], request.user)
         update_ipboard_groups(request.user)

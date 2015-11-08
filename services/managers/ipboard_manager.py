@@ -36,13 +36,14 @@ class IPBoardManager:
             return {}
 
     @staticmethod
-    def add_user(username, email):
+    def add_user(username, email, character_id):
         """ Add user to service """
         sanatized = str(IPBoardManager.__santatize_username(username))
         plain_password = IPBoardManager.__generate_random_pass()
         password = md5(plain_password).hexdigest()
+        imageurl = "http://image.eveonline.com/Character/" + str(character_id) + "_256.jpg"
         ret = IPBoardManager.exec_xmlrpc('createUser', username=sanatized, email=str(email), display_name=sanatized,
-                                         md5_passwordHash=password)
+                                         md5_passwordHash=password, avatar_url=imageurl)
         return sanatized, plain_password
 
     @staticmethod
