@@ -28,3 +28,15 @@ class HiddenGroup(models.Model):
 
     def __str__(self):
         return self.group.name + " - Hidden"
+
+class AuthGroup(models.Model):
+    group = models.ForeignKey(Group, unique=True)
+    hidden = models.BooleanField(default=False)
+    description = models.TextField(blank=True, null=True)
+    owner = models.ForeignKey(User, related_name='AuthGroup_Owner')
+    admins = models.ManyToManyField(User, related_name='AuthGroup_Admin', blank=True, null=True)
+    members = models.ManyToManyField(User, blank=True, null=True)
+    parent = models.ForeignKey('self', default=None, blank=True, null=True)
+
+    def __str__(self):
+        return self.group.name + " - AuthGroup"

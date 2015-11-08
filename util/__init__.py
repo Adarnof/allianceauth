@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.conf import settings
+from groupmanagement.models import AuthGroup
 
 
 def bootstrap_permissions():
@@ -17,8 +18,12 @@ def bootstrap_permissions():
     Permission.objects.get_or_create(codename="corp_stats", content_type=ct, name="corp_stats")
     Permission.objects.get_or_create(codename="timer_management", content_type=ct, name="timer_management")
     Permission.objects.get_or_create(codename="srp_management", content_type=ct, name="srp_management")
-    Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
-    Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
+    auth_group, created = Group.objects.get_or_create(name=settings.DEFAULT_AUTH_GROUP)
+    blue_group, created = Group.objects.get_or_create(name=settings.DEFAULT_BLUE_GROUP)
+    
+    superuser = User.objects.filter(is_superuser=True)[0]
+    AuthGroup.objects.get_or_create(group=auth_group, hidden=True, description="The default group for members of the corp or alliance.", owner=superuser)
+    AuthGroup.objects.get_or_create(group=blue_group, hidden=True, description="The default group for blues of the corp or alliance.", owner=superuser)
 
 
 def add_member_permission(user, permission):
