@@ -1,0 +1,68 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth{% endblock %}
+
+{% block page_title %}Group Management{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="text-center page-title">Group Management</h1>
+        {% if perms.auth.groupmanagement %}
+            <div class="text-right">
+                <a href="{% url 'authgroup_add' %}"><button type="button" class="btn btn-success" title="Add Group"><span class="glyphicon glyphicon-plus"></span></button></a>
+            </div>
+            <h3 class="page-header text-center">Your Owned Groups</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Group Name</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Action</th>
+                </tr>
+                {% for o in owned %}
+                    <tr>
+                        <td class="text-center">{{ o.group.name }}</td>
+                        <td class="text-center">{{ o.description }}</td>
+                        <td class="text-center"><a href=""><button type="button" class="btn btn-primary" title="Edit Properties"><span class="glyphicon glyphicon-pencil"></span></a></button>
+                                                <a href=""><button type="button" class="btn btn-success" title="Transfer Ownership"><span class="glyphicon glyphicon-upload"</span></button></a>
+                                                <a href=""><button type="button" class="btn btn-danger" title="Delete Group"><span class="glyphicon glyphicon-trash"></span></button></a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <h3 class="page-header text-center">Your Managed Groups</h3>
+            <table class="table table-bordered">
+                <tr>
+                    <th class="text-center">Group Name</th>
+                    <th class="text-center">Description</th>
+                    <th class="text-center">Owner</th>
+                    <th class="text-center">Action</th>
+                <tr>
+                {% for managed in admin %}
+                    <tr>
+                        <td class="text-center">{{ managed.group.name }}</td>
+                        <td class="text-center">{{ managed.description }}</td>
+                        <td class="text-center">{{ managed.owner }}</td>
+                        <td class="text-center"><a href=""><button type="button" class="btn btn-primary" title="Manage Members"><span class="glyphicon glyphicon-list-alt"></span></a></button></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+        <h3 class="page-header text-center">Your Groups</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th class="text-center">Group Name</th>
+                <th class="text-center">Description</th>
+                <th class="text-center">Action</th>
+            </tr>
+            {% for g in member %}
+                <tr>
+                    <td class="text-center">{{ g.group.name }}</td>
+                    <td class="text-center">{{ g.description }}</td>
+                    <td class="text-center"><a href=""><button type="button" class="btn btn-danger" title="Leave Group"><span class="glyphicon glyphicon-remove"></span></a></button></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock content %}

@@ -172,3 +172,25 @@ def authgroup_add(request):
     context = {'form': form, 'success': success}
 
     return render_to_response('registered/groupadd.html', context, context_instance=RequestContext(request))
+
+@login_required
+def authgroup_list(request):
+    user = request.user
+    owner_groups = []
+    admin_groups = []
+    member_groups = []
+    
+    for a in AuthGroup.objects.all():
+        if a.owner == user:
+            owner_groups.append(a)
+        if user in a.admins.all():
+            admin_groups.append(a)
+        elif user in a.members.all():
+            member_groups.append(a)
+
+    context = {'owned': owner_groups, 'admin': admin_groups, 'member': member_groups}
+    return render_to_response('registered/grouplist.html', context, context_instance=RequestContext(request))
+
+@login_required
+def  authgroup_edit(request):
+    return render_to_response('public/index.html', None, context_instance=RequestContext(request))
