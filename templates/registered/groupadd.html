@@ -1,0 +1,32 @@
+{% extends "public/base.html" %}
+{% load bootstrap %}
+{% load staticfiles %}
+
+{% block title %}Alliance Auth - Create Group{% endblock %}
+
+{% block page_title %}Create Group{% endblock page_title %}
+{% block extra_css %}{% endblock extra_css %}
+
+{% block content %}
+    <div class="col-lg-12">
+        <h1 class="page-header text-center">Create Group</h1>
+
+        <div class="container-fluid">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="row">
+                    {% if success %}
+                        <div class="alert alert-success text-center" role="alert">Group Created</div>
+                    {% else %}
+                        <form class="form-signin" role="form" action="" method="POST">
+                            {% csrf_token %}
+                            {{ form|bootstrap }}
+                            <br/>
+                            <button class="btn btn-lg btn-primary btn-block" type="submit">Create Group</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

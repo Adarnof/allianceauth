@@ -61,6 +61,8 @@ urlpatterns = patterns('',
                        url(r'^group/leave_request/reject/(\w+)', 'groupmanagement.views.group_leave_reject_request',
                            name='auth_group_leave_reject_request'),
 
+                       url(r'^addgroup', 'groupmanagement.views.authgroup_add',
+                           name='authgroup_add'),
                        # HR Application Management
                        url(r'^hr_application_management/', 'hrapplications.views.hr_application_management_view',
                            name="auth_hrapplications_view"),

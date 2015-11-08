@@ -11,6 +11,9 @@ from models import GroupRequest
 from models import HiddenGroup
 from authentication.managers import AuthServicesInfoManager
 from eveonline.managers import EveManager
+from managers import AuthGroupManager
+from forms import AuthGroupAddForm
+from models import AuthGroup
 
 
 @login_required
@@ -150,3 +153,22 @@ def group_request_leave(request, group_id):
     grouprequest.save()
 
     return HttpResponseRedirect("/groups")
+
+@login_required
+def authgroup_add(request):
+    success = False
+    if request.method == 'POST':
+        form = AuthGroupAddForm(request.POST, user=request.user)
+        if form.is_valid():
+            group_name = form.cleaned_data['group_name']
+            owner = request.user
+            group_description = form.cleaned_data['group_description']
+            parent = form.cleaned_data['parent']
+            hidden = form.cleaned_data['hidden']
+            success = AuthGroupManager.create_authgroup(groupname=group_name, owner=owner, hidden=hidden, description=group_description, parent=parent)
+    else:
+        form = AuthGroupAddForm(user=request.user)
+
+    context = {'form': form, 'success': success}
+
+    return render_to_response('registered/groupadd.html', context, context_instance=RequestContext(request))
