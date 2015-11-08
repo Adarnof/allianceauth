@@ -16,6 +16,7 @@ $ALLOWED_METHODS['createUser'] = array(
 																	'email' => 'string',
 																	'display_name'=> 'string',
 																	'md5_passwordHash' => 'string'
+                                                                                                                                        'avatar_url'   => 'string'
 															     ),
 												   'out' => array(
 																	'response' => 'xmlrpc'

@@ -83,7 +83,7 @@ class API_Server
 			//-----------------------------------------
 			// Create a user
 			//-----------------------------------------
-			$test = IPSMember::create( array( 'core' => array( 'email' => $email, 'md5_hash_password' => $md5_passwordHash, 'name' => $username, 'members_display_name' => $display_name ), 'extendedProfile' => array( 'pp_main_photo' => $avatar_url, 'pp_main_width' => '256', 'pp_main_height' => '256', 'pp_photo_type' => 'custom' ) ) );
+			$test = IPSMember::create( array( 'core' => array( 'email' => $email, 'md5_hash_password' => $md5_passwordHash, 'name' => $username, 'members_display_name' => $display_name), 'profile_portal' => array( 'pp_main_photo' => $avatar_url, 'pp_main_width' => 256, 'pp_main_height' => 256, 'pp_photo_type' => "custom") ) );
 			
 			//-----------------------------------------
 			// The way IPSMember::create function works is it can't fail.. It always returns true unless all data isn't provided.
