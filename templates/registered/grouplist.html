@@ -25,8 +25,8 @@
                     <tr>
                         <td class="text-center">{{ o.group.name }}</td>
                         <td class="text-center">{{ o.description }}</td>
-                        <td class="text-center"><a href=""><button type="button" class="btn btn-primary" title="Edit Properties"><span class="glyphicon glyphicon-pencil"></span></a></button>
-                                                <a href=""><button type="button" class="btn btn-success" title="Transfer Ownership"><span class="glyphicon glyphicon-upload"</span></button></a>
+                        <td class="text-center"><a href=""><button type="button" class="btn btn-primary" title="Edit Properties"><span class="glyphicon glyphicon-pencil"></span></button></a>
+                                                <a href=""><button type="button" class="btn btn-success" title="Transfer Ownership"><span class="glyphicon glyphicon-arrow-right"</span></button></a>
                                                 <a href=""><button type="button" class="btn btn-danger" title="Delete Group"><span class="glyphicon glyphicon-trash"></span></button></a></td>
                     </tr>
                 {% endfor %}
@@ -44,7 +44,8 @@
                         <td class="text-center">{{ managed.group.name }}</td>
                         <td class="text-center">{{ managed.description }}</td>
                         <td class="text-center">{{ managed.owner }}</td>
-                        <td class="text-center"><a href=""><button type="button" class="btn btn-primary" title="Manage Members"><span class="glyphicon glyphicon-list-alt"></span></a></button></td>
+                        <td class="text-center"><a href=""><button type="button" class="btn btn-primary" title="Manage Members"><span class="glyphicon glyphicon-user"></span></button></a>
+                                                <a href=""><button type="button" class="btn btn-danger" title="Resign"><span class="glyphicon glyphicon-minus"></span></button></a></td>
                     </tr>
                 {% endfor %}
             </table>
@@ -60,7 +61,7 @@
                 <tr>
                     <td class="text-center">{{ g.group.name }}</td>
                     <td class="text-center">{{ g.description }}</td>
-                    <td class="text-center"><a href=""><button type="button" class="btn btn-danger" title="Leave Group"><span class="glyphicon glyphicon-remove"></span></a></button></td>
+                    <td class="text-center"><a href=""><button type="button" class="btn btn-danger" title="Leave Group"><span class="glyphicon glyphicon-remove"></span></button></a></td>
                 </tr>
             {% endfor %}
         </table>
