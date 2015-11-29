@@ -181,16 +181,25 @@ def authgroup_list(request):
     member_groups = []
     
     for a in AuthGroup.objects.all():
-        if a.owner == user:
+        if a.group.name == settings.DEFAULT_AUTH_GROUP:
+            pass
+        elif a.group.name == settings.DEFAULT_BLUE_GROUP:
+            pass
+        elif a.owner == user:
             owner_groups.append(a)
-        if user in a.admins.all():
+        elif user in a.admins.all():
             admin_groups.append(a)
         elif user in a.members.all():
             member_groups.append(a)
 
-    context = {'owned': owner_groups, 'admin': admin_groups, 'member': member_groups}
-    return render_to_response('registered/grouplist.html', context, context_instance=RequestContext(request))
+    render_items = {'owned': owner_groups, 'admin': admin_groups, 'member': member_groups}
+    return render_to_response('registered/grouplist.html', render_items, context_instance=RequestContext(request))
 
 @login_required
-def  authgroup_edit(request):
+def authgroup_edit(request):
     return render_to_response('public/index.html', None, context_instance=RequestContext(request))
+
+@login_required
+def authgroup_delete(request, authgroup_name):
+    render_items = {'group_name': authgroup_name}
+    return render_to_response('registered/groupdelete.html', render_items, context_instance=RequestContext(request))
