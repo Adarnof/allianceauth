@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from eveonline.models import EveCharacter
+from eveonline.models import EveCorporationInfo
 
 
 class HRApplication(models.Model):
@@ -12,6 +13,7 @@ class HRApplication(models.Model):
     about = models.TextField(default="")
     extra = models.TextField(default="")
 
+    corp = models.ForeignKey(EveCorporationInfo)
     user = models.ForeignKey(User)
 
     approved_denied = models.NullBooleanField(blank=True, null=True)

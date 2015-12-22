@@ -28,14 +28,20 @@ def hr_application_management_view(request):
 		# Get the corp the member is in
 		auth_info = AuthServicesInfo.objects.get(user=request.user)
 		if auth_info.main_char_id != "":
-			main_corp_id = EveManager.get_charater_corporation_id_by_id(auth_info.main_char_id)
-			if main_corp_id == settings.CORP_ID:
-				main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
-				corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
-				corp_applications = HRApplication.objects.filter(approved_denied=None)
-			else:
+			try:
+				main_corp_id = EveManager.get_charater_corporation_id_by_id(auth_info.main_char_id)
+        	                main_alliance_id = EveManager.get_charater_alliance_id_by_id(auth_info.main_char_id)
+				if (settings.IS_CORP and main_corp_id == settings.CORP_ID) or (not settings.IS_CORP and main_alliance_id == settings.ALLIANCE_ID):
+					main_char = EveCharacter.objects.get(character_id=auth_info.main_char_id)
+					if EveCorporationInfo.objects.filter(corporation_id=main_char.corporation_id).exists():
+	                                    corp = EveCorporationInfo.objects.get(corporation_id=main_char.corporation_id)
+        	                            corp_applications = HRApplication.objects.filter(corp=corp).filter(approved_denied=None)
+                	                else:
+                        	            corp_applications = None
+				else:
+					corp_applications = None
+			except:
 				corp_applications = None
-
 	context = {'personal_apps': HRApplication.objects.all().filter(user=request.user),
 			   'applications': corp_applications,
 			   'search_form': HRApplicationSearchForm()}
@@ -56,6 +62,7 @@ def hr_application_create_view(request):
 			application.character_name = form.cleaned_data['character_name']
 			application.full_api_id = form.cleaned_data['full_api_id']
 			application.full_api_key = form.cleaned_data['full_api_key']
+			application.corp = EveCorporationInfo.objects.get(corporation_id=form.cleaned_data['corp'])
 			application.is_a_spi = form.cleaned_data['is_a_spi']
 			application.about = form.cleaned_data['about']
 			application.extra = form.cleaned_data['extra']
