@@ -655,7 +655,7 @@ def deactivate_ips4(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Ips4Manager.delete_user(authinfo.ips4_id)
     if result != "":
-        AuthServicesInfoManager.update_user_ips4_info("", "", None, request.user)
+        AuthServicesInfoManager.update_user_ips4_info("", "", "", request.user)
         logger.info("Succesfully deactivated IPS4 for user %s" % request.user)
         return HttpResponseRedirect("/services/")
     logger.error("Unsuccesful attempt to deactivate IPS4 for user %s" % request.user)
