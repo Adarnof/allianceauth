@@ -594,7 +594,7 @@ def activate_ips4(request):
     logger.debug("Adding phpbb user for user %s with main character %s" % (request.user, character))
     result = Ips4Manager.add_user(character.character_name, request.user.email)
     # if empty we failed
-    if result[0] != "":
+    if result[0]:
         AuthServicesInfoManager.update_user_ips4_info(result[0], result[1], result[2], request.user)
         logger.debug("Updated authserviceinfo for user %s with IPS4 credentials." % request.user)
         #update_ips4_groups.delay(request.user.pk)
@@ -610,7 +610,7 @@ def reset_ips4_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Ips4Manager.update_user_password(authinfo.ips4_username, request.user.email, authinfo.ips4_id)
     # false we failed
-    if result != "":
+    if result:
         AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, authinfo.ips4_id, request.user)
         logger.info("Succesfully reset IPS4 password for user %s" % request.user)
         return HttpResponseRedirect("/services/")
@@ -631,7 +631,7 @@ def set_ips4_password(request):
             logger.debug("Form contains password of length %s" % len(password))
             authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
             result = Ips4Manager.update_user_pass(authinfo.ips4_username, request.user.email, authinfo.ips4_id, password=password)
-            if result != "":
+            if result:
                 AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, authinfo.ips4_id, request.user)
                 logger.info("Succesfully reset IPS4 password for user %s" % request.user)
                 return HttpResponseRedirect("/services/")
