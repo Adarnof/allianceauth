@@ -25,7 +25,7 @@ class Ips4Manager:
             'group': Ips4Manager.MEMBER_GROUP_ID,
         }
         try:
-            r = requests.POST(settings.IPS4_URL + Ips4Manager.MEMBER_ENDPOINT, auth=(settings.IPS4_API_KEY, None), json=data)
+            r = requests.post(settings.IPS4_URL + Ips4Manager.MEMBER_ENDPOINT, auth=(settings.IPS4_API_KEY, None), json=data)
             r.raise_for_status()
             id = r.json()['id']
             logger.info("Added IPS4 user %s" % username)
@@ -38,7 +38,7 @@ class Ips4Manager:
     def delete_user(id):
         logger.debug("Deleting IPS4 user id %s" % id)
         try:
-            r = requests.DELETE(settings.IPS4_URL + Ips4Manager.MEMBER_ENDPOINT + "/%s" % id, auth=(settings.IPS4_API_KEY, None))
+            r = requests.delete(settings.IPS4_URL + Ips4Manager.MEMBER_ENDPOINT + "/%s" % id, auth=(settings.IPS4_API_KEY, None))
             r.raise_for_status()
             logger.info("Deleted IPS4 user %s" % id)
             return True
@@ -58,7 +58,7 @@ class Ips4Manager:
             'password': password,
         }
         try:
-            r = requests.POST(settings.IPS4_URL + Ips4Manager.MEMBER_ENDPOINT + "/%s" % id, auth=(settings.IPS4_API_KEY, None), json=data)
+            r = requests.post(settings.IPS4_URL + Ips4Manager.MEMBER_ENDPOINT + "/%s" % id, auth=(settings.IPS4_API_KEY, None), json=data)
             r.raise_for_status()
             logger.info("Reset IPS4 user %s password" % username)
             return password
