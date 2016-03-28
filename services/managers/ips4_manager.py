@@ -3,6 +3,8 @@ from django.conf import settings
 import requests
 import os
 
+logger = logging.getLogger(__name__)
+
 class Ips4Manager:
     MEMBER_GROUP_ID = 3
     MEMBER_ENDPOINT = "/api/core/members"
