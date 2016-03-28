@@ -32,7 +32,7 @@ class Ips4Manager:
             return username, password, id
         except:
             logger.exception("Failed to add IPS4 user %s" % username)
-            return None, None, 0
+            return "", "", ""
 
     @staticmethod
     def delete_user(id):
@@ -64,4 +64,4 @@ class Ips4Manager:
             return password
         except:
             logger.exception("Failed to reset IPS4 user %s password" % username)
-            return None
+            return ""

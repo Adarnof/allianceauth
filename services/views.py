@@ -591,10 +591,10 @@ def activate_ips4(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
-    logger.debug("Adding IPB4 user for user %s with main character %s" % (request.user, character))
+    logger.debug("Adding IPS4 user for user %s with main character %s" % (request.user, character))
     result = Ips4Manager.add_user(character.character_name, request.user.email)
     # if empty we failed
-    if result[0]:
+    if result[0] != "":
         AuthServicesInfoManager.update_user_ips4_info(result[0], result[1], result[2], request.user)
         logger.debug("Updated authserviceinfo for user %s with IPS4 credentials." % request.user)
         #update_ips4_groups.delay(request.user.pk)
@@ -610,7 +610,7 @@ def reset_ips4_password(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Ips4Manager.update_user_password(authinfo.ips4_username, request.user.email, authinfo.ips4_id)
     # false we failed
-    if result:
+    if result != "":
         AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, authinfo.ips4_id, request.user)
         logger.info("Succesfully reset IPS4 password for user %s" % request.user)
         return HttpResponseRedirect("/services/")
@@ -631,7 +631,7 @@ def set_ips4_password(request):
             logger.debug("Form contains password of length %s" % len(password))
             authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
             result = Ips4Manager.update_user_pass(authinfo.ips4_username, request.user.email, authinfo.ips4_id, password=password)
-            if result:
+            if result != "":
                 AuthServicesInfoManager.update_user_ips4_info(authinfo.ips4_username, result, authinfo.ips4_id, request.user)
                 logger.info("Succesfully reset IPS4 password for user %s" % request.user)
                 return HttpResponseRedirect("/services/")
@@ -654,7 +654,7 @@ def deactivate_ips4(request):
     logger.debug("deactivate_ips4 called by user %s" % request.user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     result = Ips4Manager.delete_user(authinfo.ips4_id)
-    if result:
+    if result != "":
         AuthServicesInfoManager.update_user_ips4_info("", "", None, request.user)
         logger.info("Succesfully deactivated IPS4 for user %s" % request.user)
         return HttpResponseRedirect("/services/")
