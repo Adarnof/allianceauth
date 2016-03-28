@@ -591,7 +591,7 @@ def activate_ips4(request):
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
     # Valid now we get the main characters
     character = EveManager.get_character_by_id(authinfo.main_char_id)
-    logger.debug("Adding phpbb user for user %s with main character %s" % (request.user, character))
+    logger.debug("Adding IPB4 user for user %s with main character %s" % (request.user, character))
     result = Ips4Manager.add_user(character.character_name, request.user.email)
     # if empty we failed
     if result[0]:
