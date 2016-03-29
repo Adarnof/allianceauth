@@ -15,7 +15,7 @@ class AuthServicesInfo(models.Model):
     teamspeak3_perm_key = models.CharField(max_length=254, blank=True, default="")
     discord_uid = models.CharField(max_length=254, blank=True, default="")
     discourse_username = models.CharField(max_length=254, blank=True, default="")
-    discource_password = models.CharField(max_length=254, blank=True, default="")
+    discourse_password = models.CharField(max_length=254, blank=True, default="")
     main_char_id = models.CharField(max_length=64, blank=True, default="")
     is_blue = models.BooleanField(default=False)
     user = models.ForeignKey(User)

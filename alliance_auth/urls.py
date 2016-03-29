@@ -136,6 +136,12 @@ urlpatterns = patterns('',
                        url(r'^deactivate_discord/$', 'services.views.deactivate_discord', name='auth_deactivate_discord'),
                        url(r'^reset_discord/$', 'services.views.reset_discord', name='auth_reset_discord'),
 
+                       # Discourse Service Control
+                       url(r'^activate_discourse/$', 'services.views.activate_discourse', name='auth_activate_discourse'),
+                       url(r'^deactivate_discourse/$', 'services.views.deactivate_discourse', name='auth_deactivate_discourse'),
+                       url(r'^reset_discourse/$', 'services.views.reset_discourse_password', name='auth_reset_discourse_password'),
+                       url(r'^set_discourse_password/$', 'services.views.set_discourse_password', name='auth_set_discourse_password'),
+
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
                            name='auth_fleet_format_tool_view'),
