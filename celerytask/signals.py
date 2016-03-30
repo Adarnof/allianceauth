@@ -8,6 +8,7 @@ from .tasks import update_forum_groups
 from .tasks import update_ipboard_groups
 from .tasks import update_discord_groups
 from .tasks import update_teamspeak3_groups
+from .tasks import update_discourse_groups
 from authentication.models import AuthServicesInfo
 
 logger = logging.getLogger(__name__)
@@ -30,3 +31,5 @@ def m2m_changed_user_groups(sender, instance, action, *args, **kwargs):
             update_discord_groups.delay(instance.pk)
         if auth.mumble_username:
             update_mumble_groups.delay(instance.pk)
+        if auth.discourse_username:
+            update_discourse_groups.delay(instance.pk)

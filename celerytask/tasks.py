@@ -177,7 +177,7 @@ def update_discourse_groups(pk):
     try:
         DiscourseManager.update_groups(authserviceinfo.discourse_username, groups)
     except:
-        logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user)
+        logger.warn("Discourse group sync failed for %s, retrying in 10 mins" % user, exc_info=True)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s discord groups." % user)
 

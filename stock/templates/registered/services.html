@@ -158,7 +158,7 @@
             {% if ENABLE_BLUE_DISCOURSE %}
                 <td class="text-center">Discourse</td>
                 <td class="text-center">{{ authinfo.discourse_username }}</td>
-                <td class="text-center">{{ authinfo.discource_password }}</td>
+                <td class="text-center">{{ authinfo.discourse_password }}</td>
                 <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.discourse_username "" %}
@@ -372,7 +372,7 @@
             {% if ENABLE_AUTH_DISCOURSE %}
                 <td class="text-center">Discourse</td>
                 <td class="text-center">{{ authinfo.discourse_username }}</td>
-                <td class="text-center">{{ authinfo.discource_password }}</td>
+                <td class="text-center">{{ authinfo.discourse_password }}</td>
                 <td class="text-center"><a href="{{ DISCOURSE_URL }}">{{ DISCOURSE_URL }}</a></td>
                 <td class="text-center">
                     {% ifequal authinfo.discourse_username "" %}
