@@ -63,7 +63,7 @@ ENDPOINTS = {
             },
         },
         'update': {
-            'path': "/users/%s",
+            'path': "/users/%s.json",
             'method': requests.put,
             'args': {
                 'required': ['params'],
@@ -79,18 +79,34 @@ ENDPOINTS = {
             },
         },
         'activate': {
-            'path': "admin/users/%s/activate",
+            'path': "/admin/users/%s/activate",
             'method': requests.put,
             'args': {
                 'required': [],
                 'optional': [],
             },
         },
-        'deactivate': {
-            'path': "/users/%s",
+        'set_email': {
+            'path': "/users/%s/preferences/email",
             'method': requests.put,
             'args': {
-                'required': ['active'],
+                'required': ['email'],
+                'optional': [],
+            },
+        },
+        'suspend': {
+            'path': "/admin/users/%s/suspend",
+            'method': requests.put,
+            'args': {
+                'required': ['duration', 'reason'],
+                'optional': [],
+            },
+        },
+        'unsuspend': {
+            'path': "/admin/users/%s/unsuspend",
+            'method': requests.put,
+            'args': {
+                'required': [],
                 'optional': [],
             },
         },
@@ -100,6 +116,8 @@ ENDPOINTS = {
 class DiscourseManager:
     GROUP_CACHE_MAX_AGE = datetime.timedelta(minutes=30)
     REVOKED_EMAIL = 'revoked@' + settings.DOMAIN
+    SUSPEND_DAYS = 99999
+    SUSPEND_REASON = "Disabled by auth."
 
     @staticmethod
     def __exc(endpoint, *args, **kwargs):
@@ -121,13 +139,19 @@ class DiscourseManager:
             if not arg in endpoint['args']['required'] and not arg in endpoint['args']['optional']:
                 logger.warn("Received unrecognized kwarg %s for endpoint %s" % (arg, endpoint))
         r = endpoint['method'](settings.DISCOURSE_URL + path, params=params, json=data)
-        if 'errors' in r.json():
-            logger.error("Discourse execution failed.\nEndpoint: %s\nErrors: %s" % (endpoint, r.json()['errors']))
+        out = r.text
+        try:
+            if 'errors' in r.json():
+                logger.error("Discourse execution failed.\nEndpoint: %s\nErrors: %s" % (endpoint, r.json()['errors']))
+            r.raise_for_status()
+            if 'success' in r.json():
+                if not r.json()['success']:
+                    raise Exception("Execution failed")
+            out = r.json()
+        except ValueError:
+            logger.warn("No json data received for endpoint %s" % endpoint)
         r.raise_for_status()
-        if 'success' in r.json():
-            if not r.json()['success']:
-                raise ValueError()
-        return r.json()
+        return out
 
     @staticmethod
     def __generate_random_pass():
@@ -206,7 +230,7 @@ class DiscourseManager:
 
     @staticmethod
     def __user_name_to_id(name):
-        data = DiscourseManager.__get_user(username)
+        data = DiscourseManager.__get_user(name)
         return data['user']['id']
 
     @staticmethod
@@ -238,10 +262,28 @@ class DiscourseManager:
     @staticmethod
     def __check_if_user_exists(username):
         try:
-            DiscourseManager.__get_user(username)
+            DiscourseManager.__user_name_to_id(username)
             return True
         except:
             return False
+
+    @staticmethod
+    def __suspend_user(username):
+        id = DiscourseManager.__user_name_to_id(username)
+        endpoint = ENDPOINTS['users']['suspend']
+        return DiscourseManager.__exc(endpoint, id, duration=DiscourseManager.SUSPEND_DAYS, reason=DiscourseManager.SUSPEND_REASON)
+
+    @staticmethod
+    def __unsuspend(username):
+        id = DiscourseManager.__user_name_to_id(username)
+        endpoint = ENDPOINTS['users']['unsuspend']
+        return DiscourseManager.__exc(endpoint, id)
+
+    @staticmethod
+    def __set_email(username, email):
+        endpoint = ENDPOINTS['users']['set_email']
+        return DiscourseManager.__exc(endpoint, username, email=email)
+
     @staticmethod
     def _sanatize_username(username):
         sanatized = username.replace(" ", "_")
@@ -254,9 +296,9 @@ class DiscourseManager:
         password = DiscourseManager.__generate_random_pass()
         safe_username = DiscourseManager._sanatize_username(username)
         try:
-            if DiscourseManager.__check_if_user_exists(username):
-                logger.debug("Discourse user %s already exists. Reactivating" % username)
-                DiscourseManager.__update_user(username, password=password, active=True)
+            if DiscourseManager.__check_if_user_exists(safe_username):
+                logger.debug("Discourse user %s already exists. Reactivating" % safe_username)
+                DiscourseManager.__unsuspend(safe_username)
             else:
                 logger.debug("Creating new user account for %s" % username)
                 DiscourseManager.__create_user(safe_username, email, password)
@@ -267,23 +309,10 @@ class DiscourseManager:
             return "",""
 
     @staticmethod
-    def update_user_password(username, password=None):
-        logger.debug("Updating discourse user %s password" % username)
-        if not password:
-            password = DiscourseManager.__generate_random_pass()
-        try:
-            DiscourseManager.__update_user(username, password=password)
-            logger.info("Updated discourse user %s password" % username)
-            return password
-        except:
-            logger.exception("Failed to update discourse user %s password" % username)
-
-    @staticmethod
     def delete_user(username):
         logger.debug("Deleting discourse user %s" % username)
-        password = DiscourseManager.__generate_random_pass()
         try:
-            DiscourseManager.__update_user(username, password=password, email=DiscourseManager.REVOKED_EMAIL, active=False)
+            DiscourseManager.__suspend_user(username)
             logger.info("Deleted discourse user %s" % username)
             return True
         except:

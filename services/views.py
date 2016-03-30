@@ -643,51 +643,6 @@ def deactivate_discourse(request):
 
 @login_required
 @user_passes_test(service_blue_alliance_test)
-def set_discourse_password(request):
-    logger.debug("set_discourse_password called by user %s" % request.user)
-    error = None
-    if request.method == 'POST':
-        logger.debug("Received POST request with form.")
-        form = ServicePasswordForm(request.POST)
-        logger.debug("Form is valid: %s" % form.is_valid())
-        if form.is_valid():
-            password = form.cleaned_data['password']
-            logger.debug("Form contains password of length %s" % len(password))
-            authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-            result = DiscourseManager.update_user_password(authinfo.forum_username, password=password)
-            if result != "":
-                AuthServicesInfoManager.update_user_discourse_info(authinfo.forum_username, result, request.user)
-                logger.info("Successfully reset discourse password for user %s" % request.user)
-                return HttpResponseRedirect("/services/")
-            else:
-                logger.error("Failed to install custom discourse password for user %s" % request.user)
-                error = "Failed to install custom discourse password."
-        else:
-            error = "Invalid password provided"
-    else:
-        logger.debug("Request is not type POST - providing empty form.")
-        form = ServicePasswordForm()
-
-    logger.debug("Rendering form for user %s" % request.user)
-    context = {'form': form, 'service': 'Discourse'}
-    return render_to_response('registered/service_password.html', context, context_instance=RequestContext(request))
-
-
-@login_required
-@user_passes_test(service_blue_alliance_test)
-def reset_discourse_password(request):
-    logger.debug("reset_discourse_password called by user %s" % request.user)
-    authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)
-    result = DiscourseManager.update_user_password(authinfo.discourse_username)
-    if result != "":
-        AuthServicesInfoManager.update_user_discourse_info(authinfo.discourse_username, result, request.user)
-        logger.info("Successfully reset discourse password for user %s" % request.user)
-        return HttpResponseRedirect("/services/")
-    logger.error("Unsuccessful attempt to reset discourse password for user %s" % request.user)
-    return HttpResponseRedirect("/dashboard")
-
-@login_required
-@user_passes_test(service_blue_alliance_test)
 def activate_ips4(request):
     logger.debug("activate_ips4 called by user %s" % request.user)
     authinfo = AuthServicesInfoManager.get_auth_service_info(request.user)

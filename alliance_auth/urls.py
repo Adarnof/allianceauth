@@ -140,8 +140,6 @@ urlpatterns = patterns('',
                        # Discourse Service Control
                        url(r'^activate_discourse/$', 'services.views.activate_discourse', name='auth_activate_discourse'),
                        url(r'^deactivate_discourse/$', 'services.views.deactivate_discourse', name='auth_deactivate_discourse'),
-                       url(r'^reset_discourse/$', 'services.views.reset_discourse_password', name='auth_reset_discourse_password'),
-                       url(r'^set_discourse_password/$', 'services.views.set_discourse_password', name='auth_set_discourse_password'),
 
                        # IPS4 Service Control
                        url(r'^activate_ips4/$', 'services.views.activate_ips4',
