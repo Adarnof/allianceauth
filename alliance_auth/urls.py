@@ -130,6 +130,7 @@ urlpatterns = patterns('',
                            name='auth_deactivate_teamspeak3'),
                        url(r'reset_teamspeak3_perm/$', 'services.views.reset_teamspeak3_perm',
                            name='auth_reset_teamspeak3_perm'),
+                       url(r'verify_teamspeak3/$', 'services.views.verify_teamspeak3', name='auth_verify_teamspeak3'),
 
                        # Discord Service Control
                        url(r'^activate_discord/$', 'services.views.activate_discord', name='auth_activate_discord'),
@@ -141,6 +142,29 @@ urlpatterns = patterns('',
                        url(r'^deactivate_discourse/$', 'services.views.deactivate_discourse', name='auth_deactivate_discourse'),
                        url(r'^reset_discourse/$', 'services.views.reset_discourse_password', name='auth_reset_discourse_password'),
                        url(r'^set_discourse_password/$', 'services.views.set_discourse_password', name='auth_set_discourse_password'),
+
+                       # IPS4 Service Control
+                       url(r'^activate_ips4/$', 'services.views.activate_ips4',
+                           name='auth_activate_ips4'),
+                       url(r'^deactivate_ips4/$', 'services.views.deactivate_ips4',
+                           name='auth_deactivate_ips4'),
+                       url(r'^reset_ips4_password/$', 'services.views.reset_ips4_password',
+                           name='auth_reset_ips4_password'),
+                       url(r'^set_ips4_password/$', 'services.views.set_ips4_password', name='auth_set_ips4_password'),
+
+                       # SMF Service Control
+                       url(r'^activate_smf/$', 'services.views.activate_smf', name='auth_activate_smf'),
+                       url(r'^deactivate_smf/$', 'services.views.deactivate_smf', name='auth_deactivate_smf'),
+                       url(r'^reset_smf_password/$', 'services.views.reset_smf_password',
+                           name='auth_reset_smf_password'),
+                       url(r'^set_smf_password/$', 'services.views.set_smf_password', name='auth_set_smf_password'),
+
+                       # Alliance Market Control
+                       url(r'^activate_market/$', 'services.views.activate_market', name='auth_activate_market'),
+                       url(r'^deactivate_market/$', 'services.views.deactivate_market', name='auth_deactivate_market'),
+                       url(r'^reset_market_password/$', 'services.views.reset_market_password',
+                           name='auth_reset_market_password'),
+                       url(r'^set_market_password/$', 'services.views.set_market_password', name='auth_set_market_password'),
 
                        # Tools
                        url(r'^tool/fleet_formatter_tool/$', 'services.views.fleet_formatter_view',
@@ -157,7 +181,9 @@ urlpatterns = patterns('',
                        url(r'^srp_all/$', 'srp.views.srp_management_all', name='auth_srp_management_all_view'),
                        url(r'^srp_fleet_view/(\w+)$', 'srp.views.srp_fleet_view', name='auth_srp_fleet_view'),
                        url(r'^srp_fleet_add_view/$', 'srp.views.srp_fleet_add_view', name='auth_srp_fleet_add_view'),
-                       url(r'^srp_fleet_remove/(\w+)$', 'srp.views.srp_fleet_remove', name='auth_srp_flet_remove'),
+                       url(r'^srp_fleet_remove/(\w+)$', 'srp.views.srp_fleet_remove', name='auth_srp_fleet_remove'),
+                       url(r'^srp_fleet_disable/(\w+)$', 'srp.views.srp_fleet_disable', name='auth_srp_fleet_disable'),
+                       url(r'^srp_fleet_enable/(\w+)$', 'srp.views.srp_fleet_enable', name='auth_srp_fleet_enable'),
                        url(r'^srp_fleet_edit/(\w+)$', 'srp.views.srp_fleet_edit_view', name='auth_srp_fleet_edit_view'),
                        url(r'^srp_fleet_mark_completed/(\w+)', 'srp.views.srp_fleet_mark_completed',
                            name='auth_srp_fleet_mark_completed'),

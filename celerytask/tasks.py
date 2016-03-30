@@ -12,6 +12,7 @@ from services.managers.ipboard_manager import IPBoardManager
 from services.managers.teamspeak3_manager import Teamspeak3Manager
 from services.managers.discord_manager import DiscordManager, DiscordAPIManager
 from services.managers.discourse_manager import DiscourseManager
+from services.managers.smf_manager import smfManager
 from services.models import AuthTS
 from services.models import TSgroup
 from authentication.models import AuthServicesInfo
@@ -68,7 +69,7 @@ def update_jabber_groups(pk):
     try:
         OpenfireManager.update_user_groups(authserviceinfo.jabber_username, authserviceinfo.jabber_password, groups)
     except:
-        logger.warn("Jabber group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Jabber group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s jabber groups." % user)
 
@@ -86,7 +87,7 @@ def update_mumble_groups(pk):
     try:
         MumbleManager.update_groups(authserviceinfo.mumble_username, groups)
     except:
-        logger.warn("Mumble group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Mumble group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s mumble groups." % user)
 
@@ -104,9 +105,28 @@ def update_forum_groups(pk):
     try:
         Phpbb3Manager.update_groups(authserviceinfo.forum_username, groups)
     except:
-        logger.warn("Phpbb group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Phpbb group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s forum groups." % user)
+
+@task
+def update_smf_groups(pk):
+    user = User.objects.get(pk=pk)
+    logger.debug("Updating smf groups for user %s" % user)
+    authserviceinfo = AuthServicesInfo.objects.get(user=user)
+    groups = []
+    for group in user.groups.all():
+        groups.append(str(group.name))
+    if len(groups) == 0:
+        groups.append('empty')
+    logger.debug("Updating user %s smf groups to %s" % (user, groups))
+    try:
+        smfManager.update_groups(authserviceinfo.smf_username, groups)
+    except:
+        logger.exception("smf group sync failed for %s, retrying in 10 mins" % user)
+        raise self.retry(countdown = 60 * 10)
+    logger.debug("Updated user %s smf groups." % user)
+
 
 @task
 def update_ipboard_groups(pk):
@@ -122,7 +142,7 @@ def update_ipboard_groups(pk):
     try:
         IPBoardManager.update_groups(authserviceinfo.ipboard_username, groups)
     except:
-        logger.warn("IPBoard group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("IPBoard group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s ipboard groups." % user)
 
@@ -158,7 +178,7 @@ def update_discord_groups(pk):
     try:
         DiscordManager.update_groups(authserviceinfo.discord_uid, groups)
     except:
-        logger.warn("Discord group sync failed for %s, retrying in 10 mins" % user)
+        logger.exception("Discord group sync failed for %s, retrying in 10 mins" % user)
         raise self.retry(countdown = 60 * 10)
     logger.debug("Updated user %s discord groups." % user)
 
@@ -337,6 +357,8 @@ def determine_membership_by_user(user):
         return False
 
 def set_state(user):
+    if user.is_superuser:
+        return
     change = False
     state = determine_membership_by_user(user)
     logger.debug("Assigning user %s to state %s" % (user, state))
@@ -433,12 +455,11 @@ def run_api_refresh():
                         refresh_api(api_key_pair)
                     except evelink.api.APIError as e:
                         if int(e.code) >= 500:
-                            logger.error("EVE API servers encountered an error. Aborting API updates")
-                            return
+                            logger.error("EVE API servers encountered error %s updating %s" % (e.code, api_key_pair))
                         elif int(e.code) == 221:
-                            logger.warn("API server hiccup while updating %s" % api_key_pair)
+                            logger.warn("API server hiccup %s while updating %s" % (e.code, api_key_pair))
                         else:
-                            logger.debug("API key %s failed update with error code %s" % (api_key_pair.api_id, e.code))
+                            logger.info("API key %s failed update with error code %s" % (api_key_pair.api_id, e.code))
                             EveManager.delete_characters_by_api_id(api_key_pair.api_id, user.id)
                             EveManager.delete_api_key_pair(api_key_pair.api_id, user.id)
                             notify(user, "API Key Deleted", message="Your API key ID %s failed validation with code %s. It and its associated characters have been deleted." % (api_key_pair.api_id, e.code), level="danger")

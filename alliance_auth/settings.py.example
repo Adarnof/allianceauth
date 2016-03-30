@@ -30,7 +30,7 @@ DEBUG = 'True' == os.environ.get('AA_DEBUG','True')
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','yourdomain.com','www.yourdomain.com']
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
@@ -97,7 +97,35 @@ DATABASES = {
         'PASSWORD': os.environ.get('AA_DB_PHPBB3_PASSWORD', 'password'),
         'HOST': os.environ.get('AA_DB_PHPBB3_HOST', '127.0.0.1'),
         'PORT': os.environ.get('AA_DB_PHPBB3_PORT', '3306'),
+    },
+
+    'ips4': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_ips4',
+        'USER': os.environ.get('AA_DB_IPS4_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_IPS4_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_IPS4_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_IPS4_PORT', '3306'),
+    },
+
+    'smf': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_smf',
+        'USER': os.environ.get('AA_DB_SMF_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_SMF_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_SMF_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_SMF_PORT', '3306'),
+    },
+
+    'market': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'alliance_market',
+        'USER': os.environ.get('AA_DB_MARKET_USER', 'allianceserver'),
+        'PASSWORD': os.environ.get('AA_DB_MARKET_PASSWORD', 'password'),
+        'HOST': os.environ.get('AA_DB_MARKET_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('AA_DB_MARKET_PORT', '3306'),
     }
+    
 }
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -122,13 +150,13 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 TEMPLATE_DIRS = (
-    'customization/templates',
-    'stock/templates',
+    os.path.join(BASE_DIR, 'customization/templates'),
+    os.path.join(BASE_DIR, 'stock/templates'),
 )
 
 STATICFILES_DIRS = (
-    'customization/static',
-    'stock/static',
+    os.path.join(BASE_DIR, "customization/static"),
+    os.path.join(BASE_DIR, "stock/static"),
 )
 
 LOGIN_URL = '/login_user/'
@@ -150,11 +178,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/allianceserver/allianceauth/static/'
-
-# Cache directory for EveWho, no ending /
-# by default this becomes ~/<installdir>/alliance_auth/cache
-# This directory needs to be writable by the webserver
-EVEWHO_CACHE_DIR = '{}/cache'.format(BASE_DIR)
 
 
 #####################################################
@@ -179,7 +202,7 @@ IS_CORP = 'True' == os.environ.get('AA_IS_CORP', 'True')
 # DOMAIN - The alliance auth domain_url
 # EMAIL_HOST - SMTP Server URL
 # EMAIL_PORT - SMTP Server PORT
-# EMAIL_HOST_USER - Email Username (for gmail, the part before @gmail.com)
+# EMAIL_HOST_USER - Email Username (for gmail, the entire address)
 # EMAIL_HOST_PASSWORD - Email Password
 # EMAIL_USE_TLS - Set to use TLS encryption
 #################
@@ -196,10 +219,12 @@ EMAIL_USE_TLS = 'True' == os.environ.get('AA_EMAIL_USE_TLS', 'True')
 # KILLBOARD_URL - URL for your killboard. Blank to hide link
 # MEDIA_URL - URL for your media page (youtube etc). Blank to hide link
 # FORUM_URL - URL for your forums. Blank to hide link
+# SMF_URL - URL for your SMF forums.
 ####################
 KILLBOARD_URL = os.environ.get('AA_KILLBOARD_URL', '')
 EXTERNAL_MEDIA_URL = os.environ.get('AA_EXTERNAL_MEDIA_URL', '')
 FORUM_URL = os.environ.get('AA_FORUM_URL', '')
+SMF_URL = os.environ.get('AA_SMF_URL', '')
 
 #########################
 # Default Group Settings
@@ -225,6 +250,9 @@ BLUE_ALLIANCE_GROUPS = 'True' == os.environ.get('AA_BLUE_ALLIANCE_GROUPS', 'Fals
 # ENABLE_AUTH_IPBOARD - Enable IPBoard forum support in the auth for auth'd members
 # ENABLE_AUTH_DISCORD - Enable Discord support in the auth for auth'd members
 # ENABLE_AUTH_DISCOURSE - Enable Discourse support in the auth for auth'd members
+# ENABLE_AUTH_IPS4 - Enable IPS4 support in the auth for auth'd members
+# ENABLE_AUTH_SMF - Enable SMF forum support in the auth for auth'd members
+# ENABLE_AUTH_MARKET = Enable Alliance Market support in auth for auth'd members
 #########################
 ENABLE_AUTH_FORUM = 'True' == os.environ.get('AA_ENABLE_AUTH_FORUM', 'False')
 ENABLE_AUTH_JABBER = 'True' == os.environ.get('AA_ENABLE_AUTH_JABBER', 'False')
@@ -233,6 +261,10 @@ ENABLE_AUTH_IPBOARD = 'True' == os.environ.get('AA_ENABLE_AUTH_IPBOARD', 'False'
 ENABLE_AUTH_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_AUTH_TEAMSPEAK3', 'False')
 ENABLE_AUTH_DISCORD = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCORD', 'False')
 ENABLE_AUTH_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCOURSE', 'False')
+ENABLE_AUTH_IPS4 = 'True' == os.environ.get('AA_ENABLE_AUTH_IPS4', 'False')
+ENABLE_AUTH_SMF = 'True' == os.environ.get('AA_ENABLE_AUTH_SMF', 'False')
+ENABLE_AUTH_MARKET = 'True' == os.environ.get('AA_ENABLE_AUTH_MARKET', 'False')
+
 
 #####################
 # Blue service Setup
@@ -244,6 +276,9 @@ ENABLE_AUTH_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_AUTH_DISCOURSE', 'Fa
 # ENABLE_BLUE_IPBOARD - Enable IPBoard forum support in the auth for blues
 # ENABLE_BLUE_DISCORD - Enable Discord support in the auth for blues
 # ENABLE_BLUE_DISCOURSE - Enable Discord support in the auth for blues
+# ENABLE_BLUE_IPS4 - Enable IPS4 forum support in the auth for blues
+# ENABLE_BLUE_SMF - Enable SMF forum support in the auth for blues
+# ENABLE_BLUE_MARKET - Enable Alliance Market in the auth for blues
 #####################
 BLUE_STANDING = float(os.environ.get('AA_BLUE_STANDING', '5.0'))
 ENABLE_BLUE_FORUM = 'True' == os.environ.get('AA_ENABLE_BLUE_FORUM', 'False')
@@ -253,6 +288,9 @@ ENABLE_BLUE_IPBOARD = 'True' == os.environ.get('AA_ENABLE_BLUE_IPBOARD', 'False'
 ENABLE_BLUE_TEAMSPEAK3 = 'True' == os.environ.get('AA_ENABLE_BLUE_TEAMSPEAK3', 'False')
 ENABLE_BLUE_DISCORD = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCORD', 'False')
 ENABLE_BLUE_DISCOURSE = 'True' == os.environ.get('AA_ENABLE_BLUE_DISCOURSE', 'False')
+ENABLE_BLUE_IPS4 = 'True' == os.environ.get('AA_ENABLE_BLUE_IPS4', 'False')
+ENABLE_BLUE_SMF = 'True' == os.environ.get('AA_ENABLE_BLUE_SMF', 'False')
+ENABLE_BLUE_MARKET = 'True' == os.environ.get('AA_ENABLE_BLUE_MARKET', 'False')
 
 #########################
 # Corp Configuration
@@ -267,7 +305,6 @@ CORP_ID = os.environ.get('AA_CORP_ID', '')
 CORP_NAME = os.environ.get('AA_CORP_NAME', '')
 CORP_API_ID = os.environ.get('AA_CORP_API_ID', '')
 CORP_API_VCODE = os.environ.get('AA_CORP_API_VCODE', '')
-
 
 #########################
 # Alliance Configuration
@@ -290,6 +327,11 @@ MEMBER_API_MASK = os.environ.get('AA_MEMBER_API_MASK', 268435455)
 MEMBER_API_ACCOUNT = 'True' == os.environ.get('AA_MEMBER_API_ACCOUNT', 'True')
 BLUE_API_MASK = os.environ.get('AA_BLUE_API_MASK', 8388608)
 BLUE_API_ACCOUNT = 'True' == os.environ.get('AA_BLUE_API_ACCOUNT', 'False')
+
+#####################
+# Alliance Market
+#####################
+MARKET_URL = os.environ.get('AA_MARKET_URL', 'http://yourdomain.com/market')
 
 #####################
 # HR Configuration
@@ -379,6 +421,15 @@ DISCORD_USER_PASSWORD = os.environ.get('AA_DISCORD_USER_PASSWORD', '')
 DISCOURSE_URL = os.environ.get('AA_DISCOURSE_URL', '')
 DISCOURSE_API_USERNAME = os.environ.get('AA_DISCOURSE_API_USERNAME', '')
 DISCOURSE_API_KEY = os.environ.get('AA_DISCOURSE_API_KEY', '')
+
+#####################################
+# IPS4 Configuration
+#####################################
+# IPS4_URL - base url of the IPS4 install (no trailing slash)
+# IPS4_API_KEY - API key provided by IPS4
+#####################################
+IPS4_URL = os.environ.get('AA_IPS4_URL', 'http://yourdomain.com/ips4')
+IPS4_API_KEY = os.environ.get('AA_IPS4_API_KEY', '')
 
 #####################################
 # Logging Configuration
