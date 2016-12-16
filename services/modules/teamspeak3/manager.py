@@ -1,9 +1,11 @@
 from __future__ import unicode_literals
+
+import logging
+
 from django.conf import settings
 
-from services.managers.util.ts3 import TS3Server, TeamspeakError
-from services.models import TSgroup
-import logging
+from services.modules.teamspeak3.util.ts3 import TS3Server, TeamspeakError
+from .models import TSgroup
 
 logger = logging.getLogger(__name__)
 

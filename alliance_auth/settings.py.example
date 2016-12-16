@@ -63,6 +63,17 @@ INSTALLED_APPS = [
     'notifications',
     'eve_sso',
     'geelweb.django.navhelper',
+    'services.modules.mumble',
+    'services.modules.discord',
+    'services.modules.discourse',
+    'services.modules.ipboard',
+    'services.modules.ips4',
+    'services.modules.market',
+    'services.modules.openfire',
+    'services.modules.smf',
+    'services.modules.phpbb3',
+    'services.modules.xenforo',
+    'services.modules.teamspeak3',
 ]
 
 MIDDLEWARE = [
