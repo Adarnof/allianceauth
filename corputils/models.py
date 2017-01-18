@@ -85,16 +85,16 @@ class CorpStats(models.Model):
         return json.loads(self._members)
 
     @members.setter
-    def members(self, dict):
-        self._members = json.dumps(dict)
+    def members(self, dictionary):
+        self._members = json.dumps(dictionary)
 
     @property
     def member_ids(self):
-        return [id for id, name in self.members.items()]
+        return [m_id for m_id, name in self.members.items()]
 
     @property
     def member_names(self):
-        return [name for id, name in self.members.items()]
+        return [name for m_id, name in self.members.items()]
 
     def show_apis(self, user):
         auth = AuthServicesInfo.objects.get(user=user)
@@ -147,6 +147,9 @@ class CorpStats(models.Model):
         def __str__(self):
             return self.character_name
 
+        def __repr__(self):
+            return "<{} ({}): {}>".format(self.__class__.__name__, self.character_id, self.character_name)
+
         def portrait_url(self, size=32):
             return "https://image.eveonline.com/Character/%s_%s.jpg" % (self.character_id, size)
 
@@ -183,3 +186,17 @@ class CorpStats(models.Model):
 
     def get_view_model(self, user):
         return CorpStats.ViewModel(self, user)
+
+    @python_2_unicode_compatible
+    class MainObject(MemberObject):
+        def __init__(self, member_object, show_apis=False):
+            super(CorpStats.MainObject, self).__init__(member_object.character_id, member_object.character_name,
+                                                       show_apis=show_apis)
+            self.alts = [CorpStats.MemberObject(c.character_id, c.character_name, show_apis=show_apis) for c in
+                         self.main.user.evecharacter_set.exclude(character_id=self.character_id)]
+
+    def get_main_objects(self, user):
+        show_apis = self.show_apis(user)
+        mains = set([member.main for member in self.get_member_objects(user) if member.main])
+        return sorted([CorpStats.MainObject(main, show_apis=show_apis) for main in mains],
+                      key=attrgetter('character_name'))
