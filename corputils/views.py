@@ -100,6 +100,39 @@ def corpstats_view(request, corp_id=None):
 
 @login_required
 @user_passes_test(access_corpstats_test)
+def corpstats_view_mains(request, corp_id):
+    # get requested model
+    corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
+    corpstats = get_object_or_404(CorpStats, corp=corp)
+
+    # get available models
+    available = CorpStats.objects.visible_to(request.user)
+
+    # ensure we can see the requested model
+    if corpstats not in available:
+        raise PermissionDenied('You do not have permission to view the selected corporation statistics module.')
+
+    context = {
+        'available': available,
+    }
+
+    # paginate
+    mains = []
+    if corpstats:
+        page = request.GET.get('page', 1)
+        mains = get_page(corpstats.get_main_objects(request.user), page)
+
+    if corpstats:
+        context.update({
+            'corpstats': corpstats.get_view_model(request.user),
+            'mains': mains,
+        })
+
+    return render(request, 'corputils/corpstats_mains.html', context=context)
+
+
+@login_required
+@user_passes_test(access_corpstats_test)
 def corpstats_update(request, corp_id):
     corp = get_object_or_404(EveCorporationInfo, corporation_id=corp_id)
     corpstats = get_object_or_404(CorpStats, corp=corp)

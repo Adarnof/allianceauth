@@ -192,8 +192,8 @@ class CorpStats(models.Model):
         def __init__(self, member_object, show_apis=False):
             super(CorpStats.MainObject, self).__init__(member_object.character_id, member_object.character_name,
                                                        show_apis=show_apis)
-            self.alts = [CorpStats.MemberObject(c.character_id, c.character_name, show_apis=show_apis) for c in
-                         self.main.user.evecharacter_set.exclude(character_id=self.character_id)]
+            self.alts = sorted([CorpStats.MemberObject(c.character_id, c.character_name, show_apis=show_apis) for c in
+                                self.main.user.evecharacter_set.all()], key=attrgetter('character_name'))
 
     def get_main_objects(self, user):
         show_apis = self.show_apis(user)

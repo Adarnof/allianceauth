@@ -1,0 +1,83 @@
+{% extends 'corputils/base.html' %}
+{% load i18n %}
+{% load humanize %}
+{% load bootstrap_pagination %}
+{% block member_data %}
+            {% if corpstats %}
+                {% include 'corputils/corpinfo.html' %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading clearfix">
+                                <div class="panel-title pull-left">
+                                    <h4>Members</h4>
+                                </div>
+                                <div class="panel-title pull-right">
+                                    Last update: {{ corpstats.last_updated|naturaltime }}
+                                    {% if corpstats.can_update %}
+                                        <a class="btn btn-success" type="button" href="{% url 'corputils:update' corpstats.corp.corporation_id %}" title="Update Now">
+                                            <span class="glyphicon glyphicon-refresh"></span>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="text-center">
+                                    {% bootstrap_paginate mains range=10 %}
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <tr>
+                                            <th class="text-center">Main</th>
+                                            <th class="text-center">Character</th>
+                                            {% if corpstats.show_apis %}
+                                                <th class="text-center">API</th>
+                                            {% endif %}
+                                            <th class="text-center">zKillboard</th>
+                                        </tr>
+                                        {% for main in mains %}
+                                            <tr>
+                                                <table class="table">
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <table class="table">
+                                                                <tr>
+                                                                    <td><img src="{{ main.portrait_url }}" class="img-circle"></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-center">{{ main.character_name }}</td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                        {% if main.alts %}
+                                                            <td>
+                                                                <table class="table">
+                                                                    {% for alt in main.alts %}
+                                                                        <tr>
+                                                                            <td><img src="{{ malt.portrait_url }}" class="img-circle"></td>
+                                                                            <td class="text-center">{{ alt.character_name }}</td>
+                                                                            {% if corpstats.show_apis %}
+                                                                                {% if alt.api %}
+                                                                                    <td class="text-center"><a href="{{ JACK_KNIFE_URL }}?usid={{ alt.api.api_id }}&apik={{ alt.api.api_key }}" target="_blank" class="label label-primary">{{ member.api.api_id }}</a></td>
+                                                                                {% else %}
+                                                                                    <td></td>
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                            <td class="text-center"><a href="https://zkillboard.com/character/{{ alt.character_id }}/" class="label label-danger" target="_blank">{% trans "Killboard" %}</a></td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                </table>
+                                                            </td>
+                                                        {% endif %}
+                                                    </tr>
+                                                </table>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+{% endblock %}

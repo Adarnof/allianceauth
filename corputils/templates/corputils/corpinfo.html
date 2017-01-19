@@ -1,0 +1,31 @@
+{% load i18n %}
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <table class="table">
+            <tr>
+                <td class="text-center col-lg-6 {% if corpstats.corp.alliance %}{% else %}col-lg-offset-3{% endif %}">
+                    <img class="ra-avatar" src="{{ corpstats.corp_logo }}">
+                </td>
+                {% if corpstats.corp.alliance %}
+                    <td class="text-center col-lg-6"><img class="ra-avatar" src="{{ corpstats.alliance_logo }}"></td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td class="text-center"><h4>{{ corpstats.corp.corporation_name }}</h4></td>
+                {% if corpstats.corp.alliance %}
+                    <td class="text-center"><h4>{{ corpstats.corp.alliance.alliance_name }}</h4></td>
+                {% endif %}
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <b>{% trans "API Index:" %}</b>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{ corpstats.registered_members }}" aria-valuemin="0" aria-valuemax="{{ corpstats.total_members }}" style="width: {% widthratio corpstats.registered_members corpstats.total_members 100 %}%;">
+                {{ corpstats.registered_members }}/{{ corpstats.total_members }}
+            </div>
+        </div>
+    </div>
+</div>
