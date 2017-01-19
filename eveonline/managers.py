@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 adapter = eve_adapter_factory()
 
+
 class EveManager:
     def __init__(self):
         pass
@@ -21,16 +22,16 @@ class EveManager:
 
     @staticmethod
     def create_character_obj(character, user, api_id):
-        EveCharacter.objects.create(
-            character_id = character.id,
-            character_name = character.name,
-            corporation_id = character.corp.id,
-            corporation_name = character.corp.name,
-            corporation_ticker = character.corp.ticker,
-            alliance_id = character.alliance.id,
-            alliance_name = character.alliance.name,
-            user = user,
-            api_id = api_id,
+        return EveCharacter.objects.create(
+            character_id=character.id,
+            character_name=character.name,
+            corporation_id=character.corp.id,
+            corporation_name=character.corp.name,
+            corporation_ticker=character.corp.ticker,
+            alliance_id=character.alliance.id,
+            alliance_name=character.alliance.name,
+            user=user,
+            api_id=api_id,
         )
 
     @staticmethod
@@ -47,6 +48,7 @@ class EveManager:
         model.alliance_id = char.alliance.id
         model.alliance_name = char.alliance.name
         model.save()
+        return model
 
     @staticmethod
     def create_api_keypair(api_id, api_key, user_id):
@@ -67,12 +69,12 @@ class EveManager:
 
     @staticmethod
     def create_alliance_obj(alliance, is_blue=False):
-        EveAllianceInfo.objects.create(
-            alliance_id = alliance.id,
-            alliance_name = alliance.name,
-            alliance_ticker = alliance.ticker,
-            executor_corp_id = alliance.executor_corp_id,
-            is_blue = is_blue,
+        return EveAllianceInfo.objects.create(
+            alliance_id=alliance.id,
+            alliance_name=alliance.name,
+            alliance_ticker=alliance.ticker,
+            executor_corp_id=alliance.executor_corp_id,
+            is_blue=is_blue,
         )
 
     @staticmethod
@@ -83,8 +85,9 @@ class EveManager:
     def update_alliance_obj(alliance, is_blue=None):
         model = EveAllianceInfo.objects.get(alliance_id=alliance.id)
         model.executor_corp_id = alliance.executor_corp_id
-        model.is_blue = model.is_blue if is_blue == None else is_blue
+        model.is_blue = model.is_blue if is_blue is None else is_blue
         model.save()
+        return model
 
     @staticmethod
     def populate_alliance(id):
@@ -92,10 +95,12 @@ class EveManager:
         alliance = adapter.get_alliance(id)
         for corp_id in alliance.corp_ids:
             if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
-               EveManager.create_corporation(corp_id, is_blue=alliance_model.is_blue)
+                EveManager.create_corporation(corp_id, is_blue=alliance_model.is_blue)
         EveCorporationInfo.objects.filter(corporation_id__in=alliance.corp_ids).update(alliance=alliance_model)
-        EveCorporationInfo.objects.filter(alliance=alliance_model).exclude(corporation_id__in=alliance.corp_ids).update(alliance=None)
-            
+        EveCorporationInfo.objects.filter(alliance=alliance_model).exclude(corporation_id__in=alliance.corp_ids).update(
+            alliance=None)
+        if alliance_model.is_blue:
+            EveCorporationInfo.objects.filter(alliance=alliance_model).update(is_blue=True)
 
     @staticmethod
     def create_corporation(id, is_blue=False):
@@ -107,13 +112,13 @@ class EveManager:
             alliance = EveAllianceInfo.objects.get(alliance_id=corp.alliance_id)
         except EveAllianceInfo.DoesNotExist:
             alliance = None
-        EveCorporationInfo.objects.create(
-            corporation_id = corp.id,
-            corporation_name = corp.name,
-            corporation_ticker = corp.ticker,
-            member_count = corp.members,
-            alliance = alliance,
-            is_blue = is_blue,
+        return EveCorporationInfo.objects.create(
+            corporation_id=corp.id,
+            corporation_name=corp.name,
+            corporation_ticker=corp.ticker,
+            member_count=corp.members,
+            alliance=alliance,
+            is_blue=is_blue,
         )
 
     @staticmethod
@@ -128,8 +133,9 @@ class EveManager:
             model.alliance = EveAllianceInfo.objects.get(alliance_id=corp.alliance_id)
         except EveAllianceInfo.DoesNotExist:
             model.alliance = None
-        model.is_blue = model.is_blue if is_blue == None else is_blue
+        model.is_blue = model.is_blue if is_blue is None else is_blue
         model.save()
+        return model
 
     @staticmethod
     def get_characters_from_api(api):
