@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'djcelery',
     'bootstrapform',
+    'alliance_auth',
     'authentication',
     'services',
     'eveonline',
