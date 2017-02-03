@@ -1,72 +1,57 @@
-{% load staticfiles %}
-<style>
-    html {
-        background: url('{% static 'img/index_images/index_blank_bg.jpg' %}') no-repeat scroll;
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-    }
-
-    div {
-        height: 200px;
-        width: 400px;
-        position: fixed;
-        top: 60%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -200px;
-    }
-    #logo {
-        height: 200px;
-        width: 900px;
-        position: fixed;
-        top: 20%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -450px;
-    }
-
-</style>
-
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>{{ SITE_NAME }}</title>
-</head>
-<body>
-<div id="logo">
-    <p style="text-align:center">
-        <img src="{% static 'img/index_images/logo.png' %}" border="0">
-    </p>
-</div>
-<div id="content">
-    <p style="text-align:center">
-        <a href="/dashboard/">
-            <img src="{% static 'img/index_images/auth.png' %}" border="0">
-        </a>
-    </p>
-    {% if FORUM_URL %}
+{% extends "public/base.html" %}
+{% load static %}
+{% block extra_style %}
+        div {
+            height: 200px;
+            width: 400px;
+            position: fixed;
+            top: 60%;
+            left: 50%;
+            margin-top: -100px;
+            margin-left: -200px;
+        }
+        #logo {
+            height: 200px;
+            width: 900px;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            margin-top: -100px;
+            margin-left: -450px;
+        }
+{% endblock %}
+{% block content %}
+    <div id="logo">
         <p style="text-align:center">
-            <a href="{{FORUM_URL}}">
-                <img src="{% static 'img/index_images/forums.png' %}" border="0">
+            <img src="{% static 'img/index_images/logo.png' %}" border="0">
+        </p>
+    </div>
+    <div id="content">
+        <p style="text-align:center">
+            <a href="/dashboard/">
+                <img src="{% static 'img/index_images/auth.png' %}" border="0">
             </a>
         </p>
-    {% endif %}
-    {% if KILLBOARD_URL %}
-        <p style="text-align:center">
-            <a href="{{KILLBOARD_URL}}">
-                <img src="{% static 'img/index_images/killboard.png' %}" border="0">
-            </a>
-        </p>
-    {% endif %}
-    {% if EXTERNAL_MEDIA_URL %}
-        <p style="text-align:center">
-            <a href="{{EXTERNAL_MEDIA_URL}}">
-                <img src="{% static 'img/index_images/media.png' %}" border="0">
-            </a>
-        </p>
-    {% endif %}
-</div>
-</body>
-</html>
+        {% if FORUM_URL %}
+            <p style="text-align:center">
+                <a href="{{ FORUM_URL }}">
+                    <img src="{% static 'img/index_images/forums.png' %}" border="0">
+                </a>
+            </p>
+        {% endif %}
+        {% if KILLBOARD_URL %}
+            <p style="text-align:center">
+                <a href="{{ KILLBOARD_URL }}">
+                    <img src="{% static 'img/index_images/killboard.png' %}" border="0">
+                </a>
+            </p>
+        {% endif %}
+        {% if EXTERNAL_MEDIA_URL %}
+            <p style="text-align:center">
+                <a href="{{ EXTERNAL_MEDIA_URL }}">
+                    <img src="{% static 'img/index_images/media.png' %}" border="0">
+                </a>
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

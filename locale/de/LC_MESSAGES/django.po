@@ -789,84 +789,84 @@ msgstr "Aktualisiere SRP Menge"
 msgid "After Action Report Link"
 msgstr "Abschlussbericht Link"
 
-#: stock/templates/public/base.html:82
+#: stock/templates/registered/base.html:82
 msgid "Logout"
 msgstr "Ausloggen"
 
-#: stock/templates/public/base.html:84
+#: stock/templates/registered/base.html:84
 #: stock/templates/registration/password_reset_complete.html:54
 msgid "Login"
 msgstr "Einloggen"
 
-#: stock/templates/public/base.html:95
+#: stock/templates/registered/base.html:95
 msgid "Main Navigation"
 msgstr "Haupmenü"
 
-#: stock/templates/public/base.html:101
+#: stock/templates/registered/base.html:101
 msgid " Dashboard"
 msgstr " Dashboard"
 
-#: stock/templates/public/base.html:107
+#: stock/templates/registered/base.html:107
 msgid " Api Keys"
 msgstr " API Keys"
 
-#: stock/templates/public/base.html:113
+#: stock/templates/registered/base.html:113
 msgid " Characters"
 msgstr " Charaktere"
 
-#: stock/templates/public/base.html:120
+#: stock/templates/registered/base.html:120
 msgid " Groups"
 msgstr " Gruppen"
 
-#: stock/templates/public/base.html:127
+#: stock/templates/registered/base.html:127
 msgid " Help"
 msgstr " Hilfe"
 
-#: stock/templates/public/base.html:132
+#: stock/templates/registered/base.html:132
 msgid "Aux Navigation"
 msgstr "Zusatz Navigation"
 
-#: stock/templates/public/base.html:138
+#: stock/templates/registered/base.html:138
 msgid " Services"
 msgstr " Dienste"
 
-#: stock/templates/public/base.html:147
+#: stock/templates/registered/base.html:147
 msgid " Applications"
 msgstr " Bewerbungen"
 
-#: stock/templates/public/base.html:155
+#: stock/templates/registered/base.html:155
 msgid " Corporation Stats"
 msgstr " Korporationsstatistiken"
 
-#: stock/templates/public/base.html:163
+#: stock/templates/registered/base.html:163
 msgid " Group Management"
 msgstr " Gruppenverwaltung"
 
-#: stock/templates/public/base.html:171
+#: stock/templates/registered/base.html:171
 msgid " Fleet Doctrines"
 msgstr " Flottendoktrinen"
 
-#: stock/templates/public/base.html:186
+#: stock/templates/registered/base.html:186
 msgid " Wormhole Tracker"
 msgstr " Wurmloch Tracker"
 
-#: stock/templates/public/base.html:193
+#: stock/templates/registered/base.html:193
 msgid " Fleet Operations"
 msgstr " Flottenoperationen"
 
-#: stock/templates/public/base.html:200
+#: stock/templates/registered/base.html:200
 msgid " Structure Timers"
 msgstr " Strukturen Timer"
 
-#: stock/templates/public/base.html:213
+#: stock/templates/registered/base.html:213
 msgid " Ship Replacement"
 msgstr " Schiff’s erstattung"
 
-#: stock/templates/public/base.html:220
+#: stock/templates/registered/base.html:220
 msgid "Util"
 msgstr "Werkzeuge"
 
-#: stock/templates/public/base.html:225
+#: stock/templates/registered/base.html:225
 #: stock/templates/registration/password_change_done.html:10
 #: stock/templates/registration/password_change_form.html:9
 #: stock/templates/registration/password_change_form.html:18
@@ -874,11 +874,11 @@ msgstr "Werkzeuge"
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: stock/templates/public/base.html:233
+#: stock/templates/registered/base.html:233
 msgid " Fleet Broadcast Formatter"
 msgstr "Flottenübertragungen Formatierer "
 
-#: stock/templates/public/base.html:241
+#: stock/templates/registered/base.html:241
 msgid " Jabber Broadcast"
 msgstr " Jabberübertragungen"
 
