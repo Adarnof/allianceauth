@@ -228,6 +228,7 @@
             	{% block content %}
             	{% endblock content %}
             </div>
+            {% include "public/footer.html" %}
         </div>
     </div>
 {% endif %}
@@ -236,6 +237,5 @@
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script>{% block extra_script %}
 {% endblock extra_script %}</script>
-{% include "public/footer.html" %}
 </body>
 </html>

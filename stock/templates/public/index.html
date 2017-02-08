@@ -1,7 +1,7 @@
 {% extends "public/base.html" %}
 {% load static %}
 {% block extra_style %}
-        div {
+        #button {
             height: 200px;
             width: 400px;
             position: fixed;
@@ -19,39 +19,67 @@
             margin-top: -100px;
             margin-left: -450px;
         }
+    html, body {
+        height: 100%;
+    }
+
+    #wrap {
+        min-height: 100%;
+    }
+
+    #main {
+        overflow:auto;
+        padding-bottom:150px; /* this needs to be bigger than footer height*/
+    }
+
+    #footer {
+        position: fixed;
+        margin-top: -300px;
+        height: 300px;
+        clear:both;
+        padding-top:20px;
+        width: 600px;
+        margin-left: -300px;
+        top: 100%;
+        left: 50%;
+    }
 {% endblock %}
 {% block content %}
-    <div id="logo">
-        <p style="text-align:center">
-            <img src="{% static 'img/index_images/logo.png' %}" border="0">
-        </p>
-    </div>
-    <div id="content">
-        <p style="text-align:center">
-            <a href="/dashboard/">
-                <img src="{% static 'img/index_images/auth.png' %}" border="0">
-            </a>
-        </p>
-        {% if FORUM_URL %}
-            <p style="text-align:center">
-                <a href="{{ FORUM_URL }}">
-                    <img src="{% static 'img/index_images/forums.png' %}" border="0">
-                </a>
-            </p>
-        {% endif %}
-        {% if KILLBOARD_URL %}
-            <p style="text-align:center">
-                <a href="{{ KILLBOARD_URL }}">
-                    <img src="{% static 'img/index_images/killboard.png' %}" border="0">
-                </a>
-            </p>
-        {% endif %}
-        {% if EXTERNAL_MEDIA_URL %}
-            <p style="text-align:center">
-                <a href="{{ EXTERNAL_MEDIA_URL }}">
-                    <img src="{% static 'img/index_images/media.png' %}" border="0">
-                </a>
-            </p>
-        {% endif %}
+    <div id="wrap">
+        <div id="main">
+            <div id="logo">
+                <p style="text-align:center">
+                    <img src="{% static 'img/index_images/logo.png' %}" border="0">
+                </p>
+            </div>
+            <div id="button">
+                <p style="text-align:center">
+                    <a href="/dashboard/">
+                        <img src="{% static 'img/index_images/auth.png' %}" border="0">
+                    </a>
+                </p>
+                {% if FORUM_URL %}
+                    <p style="text-align:center">
+                        <a href="{{ FORUM_URL }}">
+                            <img src="{% static 'img/index_images/forums.png' %}" border="0">
+                        </a>
+                    </p>
+                {% endif %}
+                {% if KILLBOARD_URL %}
+                    <p style="text-align:center">
+                        <a href="{{ KILLBOARD_URL }}">
+                            <img src="{% static 'img/index_images/killboard.png' %}" border="0">
+                        </a>
+                    </p>
+                {% endif %}
+                {% if EXTERNAL_MEDIA_URL %}
+                    <p style="text-align:center">
+                        <a href="{{ EXTERNAL_MEDIA_URL }}">
+                            <img src="{% static 'img/index_images/media.png' %}" border="0">
+                        </a>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}
