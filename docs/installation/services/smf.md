@@ -1,5 +1,7 @@
 # SMF
 
+Add `services.modules.smf` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Overview
 SMF is a free php-based forum. It’s the one of the forums for AllianceAuth.
 
@@ -29,7 +31,7 @@ The web server needs read/write permission to this folder
     sudo chown -R www-data:www-data /var/www/forums
 
 ### Web Install
-Navigate to http://yourdomain.com/forums where you will be presented with an installer.
+Navigate to http://example.com/forums where you will be presented with an installer.
 
 Click on the `Install` tab.
 

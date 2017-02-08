@@ -1,4 +1,7 @@
 # Mumble
+
+Add `services.modules.mumble` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Overview
 Mumble is a free voice chat server. While not as flashy as teamspeak, it has all the functionality and is easier to customize. And is better. I may be slightly biased.
 
@@ -11,6 +14,10 @@ The mumble server package can be retrieved from a repository we need to add, mum
 Now two packages need to be installed:
 
     sudo apt-get install python-software-properties mumble-server
+    
+You will also need to install the python dependencies for the authenticator script:
+    
+    pip install -r thirdparty/Mumble/requirements.txt
 
 ## Configuring Mumble
 Mumble ships with a configuration file that needs customization. By default it’s located at /etc/mumble-server.ini. Open it with your favourite text editor:
@@ -44,7 +51,7 @@ Now restart the server to see the changes reflected.
 
     sudo service mumble-server restart
 
-That’s it! Your server is ready to be connected to at yourdomain.com:64738
+That’s it! Your server is ready to be connected to at example.com:64738
 
 ## Configuring the Authenticator
 

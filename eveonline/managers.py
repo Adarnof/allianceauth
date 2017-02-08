@@ -3,22 +3,30 @@ from eveonline.models import EveCharacter
 from eveonline.models import EveApiKeyPair
 from eveonline.models import EveAllianceInfo
 from eveonline.models import EveCorporationInfo
+from authentication.models import AuthServicesInfo
 from eveonline.providers import eve_adapter_factory, EveXmlProvider
 from services.managers.eve_api_manager import EveApiManager
 import logging
 
 logger = logging.getLogger(__name__)
 
-adapter = eve_adapter_factory()
 
+class EveManager(object):
+    adapter = None
 
-class EveManager:
-    def __init__(self):
-        pass
+    @classmethod
+    def get_adapter(cls):
+        if not cls.adapter:
+            cls.adapter = eve_adapter_factory()
+        return cls.adapter
+
+    @classmethod
+    def get_character(cls, character_id):
+        return cls.get_adapter().get_character(character_id)
 
     @staticmethod
     def create_character(id, user, api_id):
-        return EveManager.create_character_obj(adapter.get_character(id), user, api_id)
+        return EveManager.create_character_obj(EveManager.get_character(id), user, api_id)
 
     @staticmethod
     def create_character_obj(character, user, api_id):
@@ -36,7 +44,7 @@ class EveManager:
 
     @staticmethod
     def update_character(id):
-        return EveManager.update_character_obj(adapter.get_character(id))
+        return EveManager.update_character_obj(EveManager.get_character(id))
 
     @staticmethod
     def update_character_obj(char):
@@ -63,9 +71,13 @@ class EveManager:
         else:
             logger.warn("Attempting to create existing api keypair with id %s" % api_id)
 
+    @classmethod
+    def get_alliance(cls, alliance_id):
+        return cls.get_adapter().get_alliance(alliance_id)
+
     @staticmethod
     def create_alliance(id, is_blue=False):
-        return EveManager.create_alliance_obj(adapter.get_alliance(id), is_blue=is_blue)
+        return EveManager.create_alliance_obj(EveManager.get_alliance(id), is_blue=is_blue)
 
     @staticmethod
     def create_alliance_obj(alliance, is_blue=False):
@@ -79,7 +91,7 @@ class EveManager:
 
     @staticmethod
     def update_alliance(id, is_blue=None):
-        return EveManager.update_alliance_obj(adapter.get_alliance(id), is_blue=is_blue)
+        return EveManager.update_alliance_obj(EveManager.get_alliance(id), is_blue=is_blue)
 
     @staticmethod
     def update_alliance_obj(alliance, is_blue=None):
@@ -92,7 +104,7 @@ class EveManager:
     @staticmethod
     def populate_alliance(id):
         alliance_model = EveAllianceInfo.objects.get(alliance_id=id)
-        alliance = adapter.get_alliance(id)
+        alliance = EveManager.get_alliance(id)
         for corp_id in alliance.corp_ids:
             if not EveCorporationInfo.objects.filter(corporation_id=corp_id).exists():
                 EveManager.create_corporation(corp_id, is_blue=alliance_model.is_blue)
@@ -102,9 +114,13 @@ class EveManager:
         if alliance_model.is_blue:
             EveCorporationInfo.objects.filter(alliance=alliance_model).update(is_blue=True)
 
+    @classmethod
+    def get_corporation(cls, corp_id):
+        return cls.get_adapter().get_corp(corp_id)
+
     @staticmethod
     def create_corporation(id, is_blue=False):
-        return EveManager.create_corporation_obj(adapter.get_corp(id), is_blue=is_blue)
+        return EveManager.create_corporation_obj(EveManager.get_corporation(id), is_blue=is_blue)
 
     @staticmethod
     def create_corporation_obj(corp, is_blue=False):
@@ -123,7 +139,7 @@ class EveManager:
 
     @staticmethod
     def update_corporation(id, is_blue=None):
-        return EveManager.update_corporation_obj(adapter.get_corp(id), is_blue=is_blue)
+        return EveManager.update_corporation_obj(EveManager.get_corporation(id), is_blue=is_blue)
 
     @staticmethod
     def update_corporation_obj(corp, is_blue=None):
@@ -137,10 +153,14 @@ class EveManager:
         model.save()
         return model
 
+    @classmethod
+    def get_itemtype(cls, type_id):
+        return cls.get_adapter().get_itemtype(type_id)
+
     @staticmethod
     def get_characters_from_api(api):
         char_result = EveApiManager.get_characters_from_api(api.api_id, api.api_key).result
-        provider = EveXmlProvider(adapter=adapter)
+        provider = EveXmlProvider(adapter=EveManager.get_adapter())
         return [provider._build_character(result) for id, result in char_result.items()]
 
     @staticmethod
@@ -227,6 +247,16 @@ class EveManager:
             return EveCharacter.objects.get(character_id=char_id)
 
         return None
+
+    @staticmethod
+    def get_main_character(user):
+        """
+        Get a characters main
+        :param user: django.contrib.auth.models.User
+        :return: EveCharacter
+        """
+        authserviceinfo = AuthServicesInfo.objects.get(user=user)
+        return EveManager.get_character_by_id(authserviceinfo.main_char_id)
 
     @staticmethod
     def get_characters_by_api_id(api_id):

@@ -1,5 +1,7 @@
 # phpBB3
 
+Add `services.modules.phpbb3` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ## Overview
 phpBB is a free php-based forum. It’s the default forum for AllianceAuth.
 
@@ -29,7 +31,7 @@ The web server needs read/write permission to this folder
     sudo chown -R www-data:www-data /var/www/forums
 
 ### Web Install
-Navigate to http://yourdomain.com/forums where you will be presented with an installer.
+Navigate to http://example.com/forums where you will be presented with an installer.
 
 Click on the `Install` tab.
 

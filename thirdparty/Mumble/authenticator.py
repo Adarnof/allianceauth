@@ -70,6 +70,8 @@ try:
 except ImportError:  # python 2.4 compat
     from sha import sha as sha1
 
+from passlib.hash import bcrypt_sha256
+
 
 def eprint(*args, **kwargs):
     print(*args, file=sys.stderr, **kwargs)
@@ -521,7 +523,10 @@ def do_main_program():
                 return (FALL_THROUGH, None, None)
 
             try:
-                sql = 'SELECT id, pwhash, groups FROM %sservices_mumbleuser WHERE username = %%s' % cfg.database.prefix
+                sql = 'SELECT id, pwhash, groups, hashfn ' \
+                      'FROM %smumble_mumbleuser ' \
+                      'WHERE username = %%s' % cfg.database.prefix
+
                 cur = threadDB.execute(sql, [name])
             except threadDbException:
                 return (FALL_THROUGH, None, None)
@@ -532,14 +537,16 @@ def do_main_program():
                 info('Fall through for unknown user "%s"', name)
                 return (FALL_THROUGH, None, None)
 
-            uid, upwhash, ugroups = res
+            uid, upwhash, ugroups, uhashfn = res
 
             if ugroups:
                 groups = ugroups.split(',')
             else:
                 groups = []
 
-            if allianceauth_check_hash(pw, upwhash):
+            debug('checking password with hash function: %s' % uhashfn)
+
+            if allianceauth_check_hash(pw, upwhash, uhashfn):
                 info('User authenticated: "%s" (%d)', name, uid + cfg.user.id_offset)
                 debug('Group memberships: %s', str(groups))
                 return (uid + cfg.user.id_offset, entity_decode(name), groups)
@@ -571,7 +578,7 @@ def do_main_program():
                 return FALL_THROUGH
 
             try:
-                sql = 'SELECT id FROM %sservices_mumbleuser WHERE username = %%s' % cfg.database.prefix
+                sql = 'SELECT id FROM %smumble_mumbleuser WHERE username = %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [name])
             except threadDbException:
                 return FALL_THROUGH
@@ -600,7 +607,7 @@ def do_main_program():
 
             # Fetch the user from the database
             try:
-                sql = 'SELECT username FROM %sservices_mumbleuser WHERE id = %%s' % cfg.database.prefix
+                sql = 'SELECT username FROM %smumble_mumbleuser WHERE id = %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [bbid])
             except threadDbException:
                 return FALL_THROUGH
@@ -666,7 +673,7 @@ def do_main_program():
                 filter = '%'
 
             try:
-                sql = 'SELECT id, username FROM %sservices_mumbleuser WHERE username LIKE %%s' % cfg.database.prefix
+                sql = 'SELECT id, username FROM %smumble_mumbleuser WHERE username LIKE %%s' % cfg.database.prefix
                 cur = threadDB.execute(sql, [filter])
             except threadDbException:
                 return {}
@@ -745,14 +752,20 @@ def do_main_program():
     info('Shutdown complete')
 
 
-#
-# --- Python implementation of the AllianceAuth MumbleUser hash function
-#
-def allianceauth_check_hash(password, hash):
+def allianceauth_check_hash(password, hash, hash_type):
     """
-    Python implementation of the smf check hash function
+    Python implementation of the AllianceAuth MumbleUser hash function
+    :param password: Password to be verified
+    :param hash: Hash for the password to be checked against
+    :param hash_type: Hashing function originally used to generate the hash
     """
-    return sha1(password).hexdigest() == hash
+    if hash_type == 'sha1':
+        return sha1(password).hexdigest() == hash
+    elif hash_type == 'bcrypt-sha256':
+        return bcrypt_sha256.verify(password, hash)
+    else:
+        warning("No valid hash function found for %s" % hash_type)
+        return False
 
 
 #

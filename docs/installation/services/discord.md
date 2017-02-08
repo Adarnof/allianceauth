@@ -3,6 +3,9 @@
 Discord is a web-based instant messaging client with voice. Kind of like teamspeak meets slack meets skype. It also has a standalone app for phones and desktop.
 
 ## Setup
+
+Add `services.modules.discord` to your `INSTALLED_APPS` list and run migrations before continuing with this guide to ensure the service is installed.
+
 ### Creating a Server
 *If you already have a Discord server, skip the creation step, but be sure to retrieve the server ID and enter it in settings.py*
 
@@ -29,7 +32,7 @@ This returns a code that looks like `https://discord.gg/0fmA8MyXV6qt7XAZ`. The p
 
 Navigate to the [Discord Developers site.](https://discordapp.com/developers/applications/me) Press the plus sign to create a new application.
 
-Give it a name and description relating to your auth site. Add a redirect to `https://mydomain.com/discord_callback`, substituting your domain. Press Create Application.
+Give it a name and description relating to your auth site. Add a redirect to `https://example.com/discord/callback/`, substituting your domain. Press Create Application.
 
 Update settings.py, inputting this redirect address as `DISCORD_CALLBACK_URL`
 
