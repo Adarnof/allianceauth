@@ -3,13 +3,14 @@ from setuptools import setup
 import allianceauth
 
 install_requires = [
-    'mysqlclient',
+#    'mysqlclient',
     'dnspython',
     'passlib',
     'requests>=2.9.1',
     'bcrypt',
     'python-slugify>=1.2',
     'requests-oauthlib',
+    'semantic_version',
 
     'redis',
     'celery>=4.0.2',
