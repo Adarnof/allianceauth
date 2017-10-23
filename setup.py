@@ -3,8 +3,6 @@ from setuptools import setup
 import allianceauth
 
 install_requires = [
-#    'mysqlclient',
-    'dnspython',
     'passlib',
     'requests>=2.9.1',
     'bcrypt',
@@ -45,6 +43,7 @@ setup(
     extras_require={
         'testing': testing_extras,
         ':python_version=="3.4"': ['typing'],
+        'sql': ['mysqlclient'],
     },
     python_requires='~=3.4',
     license='GPLv2',

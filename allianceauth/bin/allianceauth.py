@@ -37,11 +37,19 @@ def create_project(parser, options, args):
     allianceauth_path = os.path.dirname(allianceauth.__file__)
     template_path = os.path.join(allianceauth_path, 'project_template')
 
+    # Now find the path to the bin folder
+    bindir = sys.prefix
+    if sys.prefix == sys.base_prefix:
+        # we're not in a virtualenv so the bin folder is in the local folder
+        if not sys.prefix.endswith('local/'):
+            bindir = os.path.join(sys.prefix, 'local')
+    bindir = os.path.join(bindir, 'bin')
+
     # Call django-admin startproject
     utility_args = ['django-admin.py',
                     'startproject',
                     '--template=' + template_path,
-                    '--pythonpath=' + '/'.join(sys.executable.split('/')[:-1]),
+                    '--pythonpath=' + bindir,
                     '--ext=conf',
                     project_name]
 

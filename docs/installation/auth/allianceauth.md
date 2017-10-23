@@ -106,7 +106,7 @@ Activate the virtualenv using `source /home/allianceserver/venv/auth/bin/activat
 
 ### Alliance Auth Project
 
-You can install the library using `pip install allianceauth`. This will install Alliance Auth and all its python dependencies.
+You can install the library using `pip install allianceauth[sql]`. This will install Alliance Auth and all its python dependencies, as well as an optional dependency for using an SQL database.
 
 Now you need to create the application that will run the Alliance Auth install. Ensure you are in the allianceserver home directory by issuing `cd /home/allianceserver`.
 
